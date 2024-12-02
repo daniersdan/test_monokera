@@ -1,0 +1,93 @@
+[2024-12-02T10:15:30.686+0000] {local_task_job_runner.py:123} INFO - ::group::Pre task execution logs
+[2024-12-02T10:15:30.701+0000] {taskinstance.py:2612} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: dag.test_monokera.task_etl manual__2024-12-02T10:15:27.336510+00:00 [queued]>
+[2024-12-02T10:15:30.706+0000] {taskinstance.py:2612} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: dag.test_monokera.task_etl manual__2024-12-02T10:15:27.336510+00:00 [queued]>
+[2024-12-02T10:15:30.706+0000] {taskinstance.py:2865} INFO - Starting attempt 1 of 2
+[2024-12-02T10:15:30.715+0000] {taskinstance.py:2888} INFO - Executing <Task(PythonOperator): task_etl> on 2024-12-02 10:15:27.336510+00:00
+[2024-12-02T10:15:30.724+0000] {warnings.py:112} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:70: DeprecationWarning: This process (pid=240) is multi-threaded, use of fork() may lead to deadlocks in the child.
+  pid = os.fork()
+
+[2024-12-02T10:15:30.725+0000] {standard_task_runner.py:72} INFO - Started process 242 to run task
+[2024-12-02T10:15:30.725+0000] {standard_task_runner.py:104} INFO - Running: ['***', 'tasks', 'run', 'dag.test_monokera', 'task_etl', 'manual__2024-12-02T10:15:27.336510+00:00', '--job-id', '3', '--raw', '--subdir', 'DAGS_FOLDER/dag.test_monokera.py', '--cfg-path', '/tmp/tmp2xqw4gv_']
+[2024-12-02T10:15:30.727+0000] {standard_task_runner.py:105} INFO - Job 3: Subtask task_etl
+[2024-12-02T10:15:30.985+0000] {task_command.py:467} INFO - Running <TaskInstance: dag.test_monokera.task_etl manual__2024-12-02T10:15:27.336510+00:00 [running]> on host 39feed39e9df
+[2024-12-02T10:15:31.045+0000] {taskinstance.py:3131} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='daniel.cristancho' AIRFLOW_CTX_DAG_ID='dag.test_monokera' AIRFLOW_CTX_TASK_ID='task_etl' AIRFLOW_CTX_EXECUTION_DATE='2024-12-02T10:15:27.336510+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-12-02T10:15:27.336510+00:00'
+[2024-12-02T10:15:31.046+0000] {taskinstance.py:731} INFO - ::endgroup::
+[2024-12-02T10:15:31.098+0000] {warnings.py:112} WARNING - /opt/***/dags/src/policys/etl_policys.py:68: FutureWarning: DataFrame.applymap has been deprecated. Use DataFrame.map instead.
+  data['original_data'] = data['original_data'].applymap(lambda x: x.replace("'", "") if isinstance(x, str) else x)
+
+[2024-12-02T10:15:31.105+0000] {etl_policys.py:44} INFO - Staring data extraction for Data Insured
+[2024-12-02T10:15:31.115+0000] {etl_policys.py:48} INFO - 0 rows extracted from Data Insured
+[2024-12-02T10:15:31.116+0000] {etl_policys.py:49} INFO - Data extraction successfully finished
+[2024-12-02T10:15:31.161+0000] {etl_policys.py:44} INFO - Staring data extraction for Data Insured
+[2024-12-02T10:15:31.164+0000] {etl_policys.py:48} INFO - 0 rows extracted from Data Insured
+[2024-12-02T10:15:31.164+0000] {etl_policys.py:49} INFO - Data extraction successfully finished
+[2024-12-02T10:15:31.165+0000] {etl_policys.py:196} INFO - Staring transfomration to insured data
+[2024-12-02T10:15:31.198+0000] {etl_policys.py:275} INFO - Staring transfomration to insured data
+[2024-12-02T10:15:31.212+0000] {etl_policys.py:28} INFO - writing insured table
+[2024-12-02T10:15:31.245+0000] {etl_policys.py:32} INFO - 1000 rows load in insured
+[2024-12-02T10:15:31.246+0000] {etl_policys.py:33} INFO - loading operation finished successfully for insured
+[2024-12-02T10:15:31.246+0000] {etl_policys.py:28} INFO - writing agents table
+[2024-12-02T10:15:31.268+0000] {etl_policys.py:32} INFO - 1000 rows load in agents
+[2024-12-02T10:15:31.268+0000] {etl_policys.py:33} INFO - loading operation finished successfully for agents
+[2024-12-02T10:15:31.268+0000] {etl_policys.py:44} INFO - Staring data extraction for Data Insured
+[2024-12-02T10:15:31.271+0000] {etl_policys.py:48} INFO - 0 rows extracted from Data Insured
+[2024-12-02T10:15:31.272+0000] {etl_policys.py:49} INFO - Data extraction successfully finished
+[2024-12-02T10:15:31.272+0000] {etl_policys.py:44} INFO - Staring data extraction for Data Insured
+[2024-12-02T10:15:31.283+0000] {etl_policys.py:48} INFO - 1000 rows extracted from Data Insured
+[2024-12-02T10:15:31.283+0000] {etl_policys.py:49} INFO - Data extraction successfully finished
+[2024-12-02T10:15:31.283+0000] {etl_policys.py:44} INFO - Staring data extraction for Data Insured
+[2024-12-02T10:15:31.292+0000] {etl_policys.py:48} INFO - 1000 rows extracted from Data Insured
+[2024-12-02T10:15:31.292+0000] {etl_policys.py:49} INFO - Data extraction successfully finished
+[2024-12-02T10:15:31.293+0000] {etl_policys.py:330} INFO - Staring transfomration to insured data
+[2024-12-02T10:15:31.325+0000] {etl_policys.py:28} INFO - writing policy table
+[2024-12-02T10:15:31.355+0000] {etl_policys.py:32} INFO - 1000 rows load in policy
+[2024-12-02T10:15:31.355+0000] {etl_policys.py:33} INFO - loading operation finished successfully for policy
+[2024-12-02T10:15:31.356+0000] {etl_policys.py:44} INFO - Staring data extraction for Data Insured
+[2024-12-02T10:15:31.367+0000] {etl_policys.py:48} INFO - 1000 rows extracted from Data Insured
+[2024-12-02T10:15:31.367+0000] {etl_policys.py:49} INFO - Data extraction successfully finished
+[2024-12-02T10:15:31.367+0000] {etl_policys.py:44} INFO - Staring data extraction for Data Insured
+[2024-12-02T10:15:31.369+0000] {etl_policys.py:48} INFO - 0 rows extracted from Data Insured
+[2024-12-02T10:15:31.369+0000] {etl_policys.py:49} INFO - Data extraction successfully finished
+[2024-12-02T10:15:31.370+0000] {etl_policys.py:44} INFO - Staring data extraction for Data Insured
+[2024-12-02T10:15:31.371+0000] {etl_policys.py:48} INFO - 0 rows extracted from Data Insured
+[2024-12-02T10:15:31.371+0000] {etl_policys.py:49} INFO - Data extraction successfully finished
+[2024-12-02T10:15:31.372+0000] {etl_policys.py:419} INFO - Staring transfomration to insured data
+[2024-12-02T10:15:31.373+0000] {warnings.py:112} WARNING - /opt/***/dags/src/policys/etl_policys.py:427: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  data_source["policy_number"] = data_source[
+
+[2024-12-02T10:15:31.391+0000] {etl_policys.py:469} INFO - Staring transfomration to insured data
+[2024-12-02T10:15:31.392+0000] {warnings.py:112} WARNING - /opt/***/dags/src/policys/etl_policys.py:477: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  data_source["policy_number"] = data_source[
+
+[2024-12-02T10:15:31.409+0000] {etl_policys.py:519} INFO - Staring transfomration to insured data
+[2024-12-02T10:15:31.410+0000] {warnings.py:112} WARNING - /opt/***/dags/src/policys/etl_policys.py:527: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  data_source["policy_number"] = data_source[
+
+[2024-12-02T10:15:31.426+0000] {etl_policys.py:28} INFO - writing payments table
+[2024-12-02T10:15:31.454+0000] {etl_policys.py:32} INFO - 1000 rows load in payments
+[2024-12-02T10:15:31.454+0000] {etl_policys.py:33} INFO - loading operation finished successfully for payments
+[2024-12-02T10:15:31.454+0000] {etl_policys.py:28} INFO - writing claims table
+[2024-12-02T10:15:31.489+0000] {etl_policys.py:32} INFO - 1000 rows load in claims
+[2024-12-02T10:15:31.493+0000] {etl_policys.py:33} INFO - loading operation finished successfully for claims
+[2024-12-02T10:15:31.494+0000] {etl_policys.py:28} INFO - writing premium table
+[2024-12-02T10:15:31.518+0000] {etl_policys.py:32} INFO - 1000 rows load in premium
+[2024-12-02T10:15:31.519+0000] {etl_policys.py:33} INFO - loading operation finished successfully for premium
+[2024-12-02T10:15:31.521+0000] {logging_mixin.py:190} INFO - ****************** Success process ETL of data of csv
+[2024-12-02T10:15:31.521+0000] {python.py:240} INFO - Done. Returned value was: None
+[2024-12-02T10:15:31.532+0000] {taskinstance.py:340} INFO - ::group::Post task execution logs
+[2024-12-02T10:15:31.533+0000] {taskinstance.py:352} INFO - Marking task as SUCCESS. dag_id=dag.test_monokera, task_id=task_etl, run_id=manual__2024-12-02T10:15:27.336510+00:00, execution_date=20241202T101527, start_date=20241202T101530, end_date=20241202T101531
+[2024-12-02T10:15:31.580+0000] {local_task_job_runner.py:266} INFO - Task exited with return code 0
+[2024-12-02T10:15:31.598+0000] {taskinstance.py:3900} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2024-12-02T10:15:31.600+0000] {local_task_job_runner.py:245} INFO - ::endgroup::

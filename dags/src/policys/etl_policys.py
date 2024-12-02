@@ -11,6 +11,7 @@ import uuid
 from datetime import datetime
 import re
 
+
 class Policys:
 
     def __init__(self, db_host, db_name, db_user, db_password):
@@ -62,18 +63,30 @@ class Policys:
             )
             db.create_connection()
             base_dir = os.path.dirname(os.path.abspath(__file__))
-            source_csv = os.path.join(base_dir, 'input', 'MOCK_DATA.csv')
+            source_csv = os.path.join(base_dir, "input", "MOCK_DATA.csv")
             data = dict()
-            data['original_data'] = pd.read_csv(source_csv)
-            data['original_data'] = data['original_data'].applymap(lambda x: x.replace("'", "") if isinstance(x, str) else x)
-            data['insured_info'] = self.__extract(db, sql.querie_insured_data, source = "Data Insured")
-            def is_date_column(series):
-                return series.apply(lambda x: bool(re.match(r'^\d{1,2}/\d{1,2}/\d{4}$', str(x)))).all()
-            for col in data['original_data'].columns:
-                if is_date_column(data['original_data'][col]):
-                    data['original_data'][col] = pd.to_datetime(data['original_data'][col], format='%m/%d/%Y', errors='coerce').dt.strftime('%Y-%m-%d')
+            data["original_data"] = pd.read_csv(source_csv)
+            data["original_data"] = data["original_data"].applymap(
+                lambda x: x.replace("'", "") if isinstance(x, str) else x
+            )
+            data["insured_info"] = self.__extract(
+                db, sql.querie_insured_data, source="Data Insured"
+            )
 
-            data['agents_info'] = self.__extract(db, sql.querie_agents_data, source = "Data Insured")
+            def is_date_column(series):
+                return series.apply(
+                    lambda x: bool(re.match(r"^\d{1,2}/\d{1,2}/\d{4}$", str(x)))
+                ).all()
+
+            for col in data["original_data"].columns:
+                if is_date_column(data["original_data"][col]):
+                    data["original_data"][col] = pd.to_datetime(
+                        data["original_data"][col], format="%m/%d/%Y", errors="coerce"
+                    ).dt.strftime("%Y-%m-%d")
+
+            data["agents_info"] = self.__extract(
+                db, sql.querie_agents_data, source="Data Insured"
+            )
             insured_new_data, insured_update_data = self.__insured(data=data)
             agents_new_data, agents_update_data = self.__agents(data=data)
 
@@ -98,7 +111,9 @@ class Policys:
                     host=self.db_host,
                     query_execute=update_query.as_string(db),
                 )
-                self.__logger.info(f"The update of {insured_update_data.shape[0]} rows was made on table {const.INSURED_TABLE}.")
+                self.__logger.info(
+                    f"The update of {insured_update_data.shape[0]} rows was made on table {const.INSURED_TABLE}."
+                )
 
             if not agents_new_data.empty:
                 self.__load(
@@ -121,11 +136,19 @@ class Policys:
                     host=self.db_host,
                     query_execute=update_query.as_string(db),
                 )
-                self.__logger.info(f"The update of {insured_update_data.shape[0]} rows was made on table {const.AGENTS_TABLE}.")
+                self.__logger.info(
+                    f"The update of {insured_update_data.shape[0]} rows was made on table {const.AGENTS_TABLE}."
+                )
 
-            data['policy_info'] = self.__extract(db, sql.querie_policy_data, source = "Data Insured")
-            data['insured_info'] = self.__extract(db, sql.querie_insured_data, source = "Data Insured")
-            data['agents_info'] = self.__extract(db, sql.querie_agents_data, source = "Data Insured")
+            data["policy_info"] = self.__extract(
+                db, sql.querie_policy_data, source="Data Insured"
+            )
+            data["insured_info"] = self.__extract(
+                db, sql.querie_insured_data, source="Data Insured"
+            )
+            data["agents_info"] = self.__extract(
+                db, sql.querie_agents_data, source="Data Insured"
+            )
 
             policy_new_data, policy_update_data = self.__policy(data=data)
 
@@ -150,11 +173,19 @@ class Policys:
                     host=self.db_host,
                     query_execute=update_query.as_string(db),
                 )
-                self.__logger.info(f"The update of {insured_update_data.shape[0]} rows was made on table {const.POLICY_TABLE}.")
+                self.__logger.info(
+                    f"The update of {insured_update_data.shape[0]} rows was made on table {const.POLICY_TABLE}."
+                )
 
-            data['policy_info'] = self.__extract(db, sql.querie_policy_data, source = "Data Insured")
-            data['payments_info'] = self.__extract(db, sql.querie_payments_data, source = "Data Insured")
-            data['claims_info'] = self.__extract(db, sql.querie_claims_data, source = "Data Insured")
+            data["policy_info"] = self.__extract(
+                db, sql.querie_policy_data, source="Data Insured"
+            )
+            data["payments_info"] = self.__extract(
+                db, sql.querie_payments_data, source="Data Insured"
+            )
+            data["claims_info"] = self.__extract(
+                db, sql.querie_claims_data, source="Data Insured"
+            )
             payments_new_data = self.__payments(data=data)
             claims_new_data = self.__claims(data=data)
             premium_new_data = self.__premium(data=data)
@@ -195,8 +226,8 @@ class Policys:
     def __insured(self, data):
         self.__logger.info(f"Staring transfomration to insured data")
         try:
-            data_source = data['original_data'][const.INSURED_COLUMNS_CSV]
-            data_current = data['insured_info']
+            data_source = data["original_data"][const.INSURED_COLUMNS_CSV]
+            data_current = data["insured_info"]
             data_merge = data_source.merge(
                 data_current,
                 on=["insured_name"],
@@ -207,18 +238,14 @@ class Policys:
             new_data = data_merge[data_merge["_merge"] == "left_only"]
             if not new_data.empty:
                 new_data = new_data[const.INSURED_COLUMNS_CSV]
-                new_data["id"] = new_data.apply(
-                    lambda _: uuid.uuid4(), axis=1
-                )
+                new_data["id"] = new_data.apply(lambda _: uuid.uuid4(), axis=1)
                 new_data["created_at"] = pd.to_datetime(
                     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
                 )
                 new_data["updated_at"] = pd.to_datetime(
                     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
                 )
-                new_data["insured_age"] = new_data[
-                    "insured_age"
-                ].astype("Int64")
+                new_data["insured_age"] = new_data["insured_age"].astype("Int64")
                 new_data["insured_postal_code"] = new_data[
                     "insured_postal_code"
                 ].astype("Int64")
@@ -226,6 +253,7 @@ class Policys:
             update_data = data_merge[data_merge["_merge"] == "both"]
             update_data = update_data.where(update_data.notnull(), None)
             if not update_data.empty:
+
                 def find_different_columns(row):
                     different_columns = []
                     for i in range(0, len(row), 2):
@@ -255,11 +283,10 @@ class Policys:
                 ].apply(find_different_columns, axis=1)
                 update_data = update_data[update_data["check_update"] != "N"]
                 update_data["updated_at"] = pd.to_datetime(
-                    datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
+                    datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+                )
                 update_data = update_data[const.INSURED_COLUMNS_TABLE]
-                update_data["insured_age"] = update_data[
-                    "insured_age"
-                ].astype("Int64")
+                update_data["insured_age"] = update_data["insured_age"].astype("Int64")
                 update_data["insured_postal_code"] = update_data[
                     "insured_postal_code"
                 ].astype("Int64")
@@ -274,8 +301,8 @@ class Policys:
     def __agents(self, data):
         self.__logger.info(f"Staring transfomration to insured data")
         try:
-            data_source = data['original_data'][const.AGENTS_COLUMNS_CSV]
-            data_current = data['agents_info']
+            data_source = data["original_data"][const.AGENTS_COLUMNS_CSV]
+            data_current = data["agents_info"]
             data_merge = data_source.merge(
                 data_current,
                 on=["agent_email"],
@@ -286,9 +313,7 @@ class Policys:
             new_data = data_merge[data_merge["_merge"] == "left_only"]
             if not new_data.empty:
                 new_data = new_data[const.AGENTS_COLUMNS_CSV]
-                new_data["id"] = new_data.apply(
-                    lambda _: uuid.uuid4(), axis=1
-                )
+                new_data["id"] = new_data.apply(lambda _: uuid.uuid4(), axis=1)
                 new_data["created_at"] = pd.to_datetime(
                     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
                 )
@@ -299,6 +324,7 @@ class Policys:
             update_data = data_merge[data_merge["_merge"] == "both"]
             update_data = update_data.where(update_data.notnull(), None)
             if not update_data.empty:
+
                 def find_different_columns(row):
                     different_columns = []
                     for i in range(0, len(row), 2):
@@ -307,16 +333,12 @@ class Policys:
                     return different_columns if different_columns else "N"
 
                 update_data["check_update"] = update_data[
-                    [
-                        "agent_name",
-                        "agent_name_crr",
-                        "agent_phone",
-                        "agent_phone_crr"
-                    ]
+                    ["agent_name", "agent_name_crr", "agent_phone", "agent_phone_crr"]
                 ].apply(find_different_columns, axis=1)
                 update_data = update_data[update_data["check_update"] != "N"]
                 update_data["updated_at"] = pd.to_datetime(
-                    datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
+                    datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+                )
                 update_data = update_data[const.AGENTS_COLUMNS_TABLE]
 
         except Exception as e:
@@ -329,28 +351,18 @@ class Policys:
     def __policy(self, data):
         self.__logger.info(f"Staring transfomration to insured data")
         try:
-            data_source = data['original_data'][const.POLICYS_COLUMNS_CSV]
-            data_current = data['policy_info']
-            agents_info = data['agents_info']
-            insured_info = data['insured_info']
-            data_source = data_source.merge(
-                agents_info,
-                how="left",
-                on="agent_name"
+            data_source = data["original_data"][const.POLICYS_COLUMNS_CSV]
+            data_current = data["policy_info"]
+            agents_info = data["agents_info"]
+            insured_info = data["insured_info"]
+            data_source = data_source.merge(agents_info, how="left", on="agent_name")
+            data_source.rename(columns={"id": "agent_id"}, inplace=True)
+            data_source = data_source.merge(insured_info, how="left", on="insured_name")
+            data_source.rename(columns={"id": "insured_id"}, inplace=True)
+            data_source["policy_number"] = data_source["policy_number"].astype("Int64")
+            data_current["policy_number"] = data_current["policy_number"].astype(
+                "Int64"
             )
-            data_source.rename(columns={"id":"agent_id"}, inplace=True)
-            data_source = data_source.merge(
-                insured_info,
-                how="left",
-                on="insured_name"
-            )
-            data_source.rename(columns={"id":"insured_id"}, inplace=True)
-            data_source["policy_number"] = data_source[
-                "policy_number"
-            ].astype("Int64")
-            data_current["policy_number"] = data_current[
-                "policy_number"
-            ].astype("Int64")
             data_merge = data_source.merge(
                 data_current,
                 on=["policy_number"],
@@ -360,24 +372,21 @@ class Policys:
             )
             new_data = data_merge[data_merge["_merge"] == "left_only"]
             if not new_data.empty:
-                new_data["id"] = new_data.apply(
-                    lambda _: uuid.uuid4(), axis=1
-                )
+                new_data["id"] = new_data.apply(lambda _: uuid.uuid4(), axis=1)
                 new_data["created_at"] = pd.to_datetime(
                     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
                 )
                 new_data["updated_at"] = pd.to_datetime(
                     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
                 )
-                new_data["policy_number"] = new_data[
-                    "policy_number"
-                ].astype("Int64")
+                new_data["policy_number"] = new_data["policy_number"].astype("Int64")
 
                 new_data = new_data[const.POLICYS_COLUMNS_TABLE]
 
             update_data = data_merge[data_merge["_merge"] == "both"]
             update_data = update_data.where(update_data.notnull(), None)
             if not update_data.empty:
+
                 def find_different_columns(row):
                     different_columns = []
                     for i in range(0, len(row), 2):
@@ -397,16 +406,16 @@ class Policys:
                         "insured_id_crr",
                         "agent_id",
                         "agent_id_crr",
-
                     ]
                 ].apply(find_different_columns, axis=1)
                 update_data = update_data[update_data["check_update"] != "N"]
                 update_data["updated_at"] = pd.to_datetime(
-                    datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
+                    datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+                )
                 update_data = update_data[const.POLICYS_COLUMNS_TABLE]
-                update_data["policy_number"] = update_data[
-                    "policy_number"
-                ].astype("Int64")
+                update_data["policy_number"] = update_data["policy_number"].astype(
+                    "Int64"
+                )
 
         except Exception as e:
             self.__logger.error(
@@ -418,21 +427,13 @@ class Policys:
     def __payments(self, data):
         self.__logger.info(f"Staring transfomration to insured data")
         try:
-            data_source = data['original_data'][const.PAYMENTS_COLUMNS_CSV]
-            policy_info = data['policy_info']
-            data_current = data['payments_info']
-            policy_info["policy_number"] = policy_info[
-                "policy_number"
-            ].astype("Int64")
-            data_source["policy_number"] = data_source[
-                "policy_number"
-            ].astype("Int64")
-            data_source = data_source.merge(
-                policy_info,
-                how="left",
-                on="policy_number"
-            )
-            data_source.rename(columns={"id":"policy_id"}, inplace=True)
+            data_source = data["original_data"][const.PAYMENTS_COLUMNS_CSV]
+            policy_info = data["policy_info"]
+            data_current = data["payments_info"]
+            policy_info["policy_number"] = policy_info["policy_number"].astype("Int64")
+            data_source["policy_number"] = data_source["policy_number"].astype("Int64")
+            data_source = data_source.merge(policy_info, how="left", on="policy_number")
+            data_source.rename(columns={"id": "policy_id"}, inplace=True)
 
             data_merge = data_source.merge(
                 data_current,
@@ -443,18 +444,14 @@ class Policys:
             )
             new_data = data_merge[data_merge["_merge"] == "left_only"]
             if not new_data.empty:
-                new_data["id"] = new_data.apply(
-                    lambda _: uuid.uuid4(), axis=1
-                )
+                new_data["id"] = new_data.apply(lambda _: uuid.uuid4(), axis=1)
                 new_data["created_at"] = pd.to_datetime(
                     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
                 )
                 new_data["updated_at"] = pd.to_datetime(
                     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
                 )
-                new_data["policy_number"] = new_data[
-                    "policy_number"
-                ].astype("Int64")
+                new_data["policy_number"] = new_data["policy_number"].astype("Int64")
 
                 new_data = new_data[const.PAYMENTS_COLUMNS_TABLE]
 
@@ -468,21 +465,13 @@ class Policys:
     def __claims(self, data):
         self.__logger.info(f"Staring transfomration to insured data")
         try:
-            data_source = data['original_data'][const.CLAIMS_COLUMNS_CSV]
-            policy_info = data['policy_info']
-            data_current = data['claims_info']
-            policy_info["policy_number"] = policy_info[
-                "policy_number"
-            ].astype("Int64")
-            data_source["policy_number"] = data_source[
-                "policy_number"
-            ].astype("Int64")
-            data_source = data_source.merge(
-                policy_info,
-                how="left",
-                on="policy_number"
-            )
-            data_source.rename(columns={"id":"policy_id"}, inplace=True)
+            data_source = data["original_data"][const.CLAIMS_COLUMNS_CSV]
+            policy_info = data["policy_info"]
+            data_current = data["claims_info"]
+            policy_info["policy_number"] = policy_info["policy_number"].astype("Int64")
+            data_source["policy_number"] = data_source["policy_number"].astype("Int64")
+            data_source = data_source.merge(policy_info, how="left", on="policy_number")
+            data_source.rename(columns={"id": "policy_id"}, inplace=True)
 
             data_merge = data_source.merge(
                 data_current,
@@ -493,18 +482,14 @@ class Policys:
             )
             new_data = data_merge[data_merge["_merge"] == "left_only"]
             if not new_data.empty:
-                new_data["id"] = new_data.apply(
-                    lambda _: uuid.uuid4(), axis=1
-                )
+                new_data["id"] = new_data.apply(lambda _: uuid.uuid4(), axis=1)
                 new_data["created_at"] = pd.to_datetime(
                     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
                 )
                 new_data["updated_at"] = pd.to_datetime(
                     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
                 )
-                new_data["policy_number"] = new_data[
-                    "policy_number"
-                ].astype("Int64")
+                new_data["policy_number"] = new_data["policy_number"].astype("Int64")
 
                 new_data = new_data[const.CLAIMS_COLUMNS_TABLE]
 
@@ -518,21 +503,13 @@ class Policys:
     def __premium(self, data):
         self.__logger.info(f"Staring transfomration to insured data")
         try:
-            data_source = data['original_data'][const.PREMIUM_COLUMNS_CSV]
-            policy_info = data['policy_info']
-            data_current = data['claims_info']
-            policy_info["policy_number"] = policy_info[
-                "policy_number"
-            ].astype("Int64")
-            data_source["policy_number"] = data_source[
-                "policy_number"
-            ].astype("Int64")
-            data_source = data_source.merge(
-                policy_info,
-                how="left",
-                on="policy_number"
-            )
-            data_source.rename(columns={"id":"policy_id"}, inplace=True)
+            data_source = data["original_data"][const.PREMIUM_COLUMNS_CSV]
+            policy_info = data["policy_info"]
+            data_current = data["claims_info"]
+            policy_info["policy_number"] = policy_info["policy_number"].astype("Int64")
+            data_source["policy_number"] = data_source["policy_number"].astype("Int64")
+            data_source = data_source.merge(policy_info, how="left", on="policy_number")
+            data_source.rename(columns={"id": "policy_id"}, inplace=True)
 
             data_merge = data_source.merge(
                 data_current,
@@ -543,18 +520,14 @@ class Policys:
             )
             new_data = data_merge[data_merge["_merge"] == "left_only"]
             if not new_data.empty:
-                new_data["id"] = new_data.apply(
-                    lambda _: uuid.uuid4(), axis=1
-                )
+                new_data["id"] = new_data.apply(lambda _: uuid.uuid4(), axis=1)
                 new_data["created_at"] = pd.to_datetime(
                     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
                 )
                 new_data["updated_at"] = pd.to_datetime(
                     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
                 )
-                new_data["policy_number"] = new_data[
-                    "policy_number"
-                ].astype("Int64")
+                new_data["policy_number"] = new_data["policy_number"].astype("Int64")
 
                 new_data = new_data[const.PREMIUM_COLUMNS_TABLE]
 

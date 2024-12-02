@@ -18,10 +18,12 @@ db_password = "airflow"
 
 def etl():
     try:
-        pf = Policys(db_host=db_host,
-                     db_name=db_name,
-                     db_user=db_user,
-                     db_password=db_password,)
+        pf = Policys(
+            db_host=db_host,
+            db_name=db_name,
+            db_user=db_user,
+            db_password=db_password,
+        )
         pf.run()
         print("****************** Success process ETL of data of csv")
     except:
@@ -30,6 +32,7 @@ def etl():
             sys.exc_info(),
         )
         raise
+
 
 default_args = {
     "owner": "daniel.cristancho",
@@ -64,8 +67,4 @@ task_etl = PythonOperator(
     dag=dag,
 )
 
-(
-        dag_start
-        >> task_etl
-        >> dag_end
-)
+(dag_start >> task_etl >> dag_end)

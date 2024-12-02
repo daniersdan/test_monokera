@@ -1,9 +1,11 @@
 from psycopg2 import sql
 
-querie_insured_data = sql.SQL("""
+querie_insured_data = sql.SQL(
+    """
 select *
 from public.insured;
-""")
+"""
+)
 
 update_insured_data_query = sql.SQL(
     """
@@ -23,10 +25,12 @@ update_insured_data_query = sql.SQL(
     """
 )
 
-querie_agents_data = sql.SQL("""
+querie_agents_data = sql.SQL(
+    """
 select *
 from public.agents;
-""")
+"""
+)
 
 update_agents_data_query = sql.SQL(
     """
@@ -40,10 +44,12 @@ update_agents_data_query = sql.SQL(
     """
 )
 
-querie_policy_data = sql.SQL("""
+querie_policy_data = sql.SQL(
+    """
 select *
 from public.policy;
-""")
+"""
+)
 
 update_policy_data_query = sql.SQL(
     """
@@ -59,12 +65,16 @@ update_policy_data_query = sql.SQL(
     """
 )
 
-querie_payments_data = sql.SQL("""
+querie_payments_data = sql.SQL(
+    """
 select *
 from public.payments;
-""")
+"""
+)
 
-querie_claims_data = sql.SQL("""
+querie_claims_data = sql.SQL(
+    """
 select *
 from public.claims;
-""")
+"""
+)

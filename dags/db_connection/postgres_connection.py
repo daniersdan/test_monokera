@@ -6,6 +6,7 @@ from abc import ABC
 from sqlalchemy import text
 from uuid import UUID
 
+
 class DataConnection(ABC):
 
     def create_connection(self):

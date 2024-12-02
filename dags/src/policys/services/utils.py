@@ -6,7 +6,7 @@ MAX_DATAFRAME_SIZE = 15000
 
 
 def cte_update_query(
-        update_df: pd.DataFrame, update_query: str, fields: dict
+    update_df: pd.DataFrame, update_query: str, fields: dict
 ) -> sql.SQL:
     head_cte_update = "WITH cte (" + ",".join(fields.keys()) + ") AS ("
     update_df["select_field"] = "SELECT"
@@ -40,7 +40,7 @@ def cte_update_query(
 
 
 def postgresql_execute_query(
-        user, password, database, host, query_execute, port="5432"
+    user, password, database, host, query_execute, port="5432"
 ):
     conn = connect(
         database=database, user=user, password=password, host=host, port=port
@@ -59,34 +59,33 @@ def postgresql_execute_query(
 
 
 INSURED_UPDATE_COLUMNS = {
-    'id': 'String',
-    'insured_name': 'String',
-    'insured_gender': 'String',
-    'insured_age': 'Float',
-    'insured_address': 'String',
-    'insured_state': 'String',
-    'insured_city': 'String',
-    'insured_postal_code': 'Float',
-    'insured_country': 'String',
-    'insurance_company': 'String',
-    'updated_at': 'Date',
+    "id": "String",
+    "insured_name": "String",
+    "insured_gender": "String",
+    "insured_age": "Float",
+    "insured_address": "String",
+    "insured_state": "String",
+    "insured_city": "String",
+    "insured_postal_code": "Float",
+    "insured_country": "String",
+    "insurance_company": "String",
+    "updated_at": "Date",
 }
 
 AGENTS_UPDATE_COLUMNS = {
-    'id': 'String',
-    'agent_name': 'String',
-    'agent_email': 'String',
-    'agent_phone': 'String',
-    'updated_at': 'Date',
-
+    "id": "String",
+    "agent_name": "String",
+    "agent_email": "String",
+    "agent_phone": "String",
+    "updated_at": "Date",
 }
 
 POLICY_UPDATE_COLUMNS = {
-    'id': 'String',
-    'policy_start_date': 'String',
-    'policy_end_date': 'String',
-    'policy_type': 'String',
-    'insured_id': 'String',
-    'agent_id': 'String',
-    'updated_at': 'Date',
+    "id": "String",
+    "policy_start_date": "String",
+    "policy_end_date": "String",
+    "policy_type": "String",
+    "insured_id": "String",
+    "agent_id": "String",
+    "updated_at": "Date",
 }
