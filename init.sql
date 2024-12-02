@@ -9,7 +9,6 @@ CREATE TABLE policy (
                         policy_end_date date not null,
                         policy_type text not null,
                         insured_id uuid not null,
-                        premium_id uuid not null,
                         agent_id uuid not null,
                         created_at timestamp not null,
                         updated_at timestamp not null
@@ -34,6 +33,7 @@ CREATE TABLE insured (
 
 CREATE TABLE premium (
                          id uuid primary key,
+                         policy_id uuid not null,
                          premium_amount numeric null,
                          deductible_amount numeric null,
                          coverage_limit numeric null,
@@ -83,8 +83,6 @@ CREATE INDEX idx_claim_date ON claims(claim_date);
 ALTER TABLE policy
     ADD CONSTRAINT fk_policy_insured
         FOREIGN KEY (insured_id) REFERENCES insured(id),
-    ADD CONSTRAINT fk_policy_premium
-        FOREIGN KEY (premium_id) REFERENCES premium(id),
     ADD CONSTRAINT fk_policy_agent
         FOREIGN KEY (agent_id) REFERENCES agents(id);
 
@@ -94,4 +92,8 @@ ALTER TABLE payments
 
 ALTER TABLE claims
     ADD CONSTRAINT fk_claims_policy
+        FOREIGN KEY (policy_id) REFERENCES policy(id);
+
+ALTER TABLE premium
+    ADD CONSTRAINT fk_premium_policy
         FOREIGN KEY (policy_id) REFERENCES policy(id);

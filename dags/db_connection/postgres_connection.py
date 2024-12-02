@@ -3,6 +3,8 @@ import pandas as pd
 import psycopg2
 import sqlalchemy
 from abc import ABC
+from sqlalchemy import text
+from uuid import UUID
 
 class DataConnection(ABC):
 
@@ -79,59 +81,6 @@ class PostgreSQLConnection(DataConnection):
         except Exception as ex:
             print("Exception while executing the postgresql query {}".format(ex))
             raise
-
-    def execute_upsert(self, data_frame, schema, table_name, primary_keys, sep="|"):
-        to_be_deleted = data_frame[[x[0] for x in primary_keys]].drop_duplicates()
-        if len(to_be_deleted.index) < len(data_frame.index):
-            raise ValueError(
-                "Primary key constraint is violated in passed `data_frame`."
-            )
-        del_stream = io.StringIO()
-        del_stream.write(
-            to_be_deleted.to_csv(sep=sep, encoding="utf8", index=False, header=False)
-        )
-        del_stream.seek(0)
-        try:
-            conn = self.engine.connect()
-            curs = conn.connection.cursor()
-            curs.execute(
-                """CREATE TEMP TABLE to_be_deleted_{0}
-                            (
-                                {1}
-                            )""".format(
-                    table_name, ",\n".join(["{} {}".format(*x) for x in primary_keys])
-                )
-            )
-            curs.copy_from(del_stream, "to_be_deleted_{0}".format(table_name), sep=sep)
-            curs.execute(
-                """DELETE FROM
-                                {0}.{1}
-                            WHERE
-                            ({2}) IN (SELECT {2} FROM to_be_deleted_{1})
-                            """.format(
-                    schema, table_name, ", ".join([x[0] for x in primary_keys])
-                )
-            )
-            self.execute_insert(
-                data_frame=data_frame,
-                schema=schema,
-                table_name=table_name,
-                truncate=False,
-                sep=sep,
-            )
-            conn.connection.commit()
-        except Exception as exception:
-            print(
-                "Failure while upsert data to the table {}. {}".format(
-                    table_name, exception
-                )
-            )
-            raise exception
-        finally:
-            if curs is not None:
-                curs.close()
-            if conn is not None:
-                conn.connection.close()
 
     def execute_insert(self, data_frame, schema, table_name, truncate=False, sep="|"):
         try:
